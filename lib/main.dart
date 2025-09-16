@@ -526,12 +526,13 @@ class _DashboardPageState extends State<DashboardPage> with SingleTickerProvider
               margin: const EdgeInsets.only(right: 8, top: 9, bottom: 9),
               child: GestureDetector(
                 onTap: () {
-                  // TODO: Implement add plant functionality
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Add plant feature coming soon!'),
-                      backgroundColor: Color(0xFF16A34A),
-                    ),
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (BuildContext context) {
+                      return const AddPlantBottomSheet();
+                    },
                   );
                 },
                 child: Container(
@@ -775,6 +776,156 @@ class LevelBox extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class AddPlantBottomSheet extends StatefulWidget {
+  const AddPlantBottomSheet({super.key});
+
+  @override
+  State<AddPlantBottomSheet> createState() => _AddPlantBottomSheetState();
+}
+
+class _AddPlantBottomSheetState extends State<AddPlantBottomSheet> {
+  int _selectedTab = 0; // 0 for Available plants, 1 for Add plants
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.85,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(40),
+          topRight: Radius.circular(40),
+        ),
+      ),
+      child: Column(
+        children: [
+          // Handle bar
+          Container(
+            margin: const EdgeInsets.only(top: 10),
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 20),
+          // Tab buttons
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: [
+                // Available plants tab
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => setState(() => _selectedTab = 0),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        gradient: _selectedTab == 0
+                            ? const LinearGradient(
+                                colors: [Color(0xFF4ADE80), Color(0xFF22C55E)],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              )
+                            : null,
+                        color: _selectedTab == 0 ? null : Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: _selectedTab == 0
+                            ? null
+                            : Border.all(color: const Color(0xFF4ADE80), width: 2),
+                        boxShadow: _selectedTab == 0
+                            ? [
+                                BoxShadow(
+                                  color: const Color(0xFF4ADE80).withValues(alpha: 0.3),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ]
+                            : [
+                                BoxShadow(
+                                  color: Colors.grey.withValues(alpha: 0.1),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                      ),
+                      child: Center(
+                        child: Text(
+                          'Available plants',
+                          style: GoogleFonts.inter(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: _selectedTab == 0 ? Colors.white : const Color(0xFF4ADE80),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                // Add plants tab (circular icon button)
+                GestureDetector(
+                  onTap: () => setState(() => _selectedTab = 1),
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      gradient: _selectedTab == 1
+                          ? const LinearGradient(
+                              colors: [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            )
+                          : null,
+                      color: _selectedTab == 1 ? null : Colors.white,
+                      shape: BoxShape.circle,
+                      border: _selectedTab == 1
+                          ? null
+                          : Border.all(color: const Color(0xFF3B82F6), width: 2),
+                      boxShadow: _selectedTab == 1
+                          ? [
+                              BoxShadow(
+                                color: const Color(0xFF3B82F6).withValues(alpha: 0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
+                              ),
+                            ]
+                          : [
+                              BoxShadow(
+                                color: Colors.grey.withValues(alpha: 0.1),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                    ),
+                    child: Icon(
+                      Icons.add,
+                      color: _selectedTab == 1 ? Colors.white : const Color(0xFF3B82F6),
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          // Content based on selected tab
+          Expanded(
+            child: _selectedTab == 0
+                ? const Center(
+                    child: Text('Available plants content will be here'),
+                  )
+                : const Center(
+                    child: Text('Add plants form will be here'),
+                  ),
+          ),
+        ],
       ),
     );
   }
